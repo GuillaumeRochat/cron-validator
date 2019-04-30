@@ -1,0 +1,43 @@
+{
+  "name": "cron-validator",
+  "version": "1.0.0",
+  "description": "Validates cron expressions",
+  "main": "lib/index.js",
+  "author": "Guillaume Rochat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TheCloudConnectors/cron-validator/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheCloudConnectors/cron-validator.git"
+  },
+  "keywords": [
+    "cron",
+    "validation"
+  ],
+  "scripts": {
+    "lint": "tslint -t stylish --project \"tsconfig.json\"",
+    "test": "jest --verbose --coverage",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.12",
+    "jest": "^24.7.1",
+    "ts-jest": "^24.0.2",
+    "ts-node": "^8.1.0",
+    "tslint": "^5.16.0",
+    "tslint-config-standard": "^8.0.1",
+    "typescript": "^3.4.5"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "ts"
+    ],
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "testRegex": "((\\.|/)(test))\\.(ts)$"
+  }
+}

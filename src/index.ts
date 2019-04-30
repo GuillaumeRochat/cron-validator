@@ -1,0 +1,152 @@
+const isWildcard = (value: string): boolean => {
+  return value === '*'
+}
+
+const isInRange = (value: number, start: number, stop: number): boolean => {
+  return value >= start && value <= stop
+}
+
+const isValidRange = (value: string, start: number, stop: number): boolean => {
+  const sides = value.split('-')
+  switch (sides.length) {
+    case 1:
+      return isWildcard(value) || isInRange(parseInt(value, 10), start, stop)
+    case 2:
+      const [small, big] = sides.map((side: string): number => parseInt(side, 10))
+      return small <= big && isInRange(small, start, stop) && isInRange(big, start, stop)
+    default:
+      return false
+  }
+}
+
+const isValidStep = (value: string | undefined): boolean => {
+  return value === undefined || value.search(/[^\d]/) === -1
+}
+
+const validateForRange = (value: string, start: number, stop: number): boolean => {
+  if (value.search(/[^\d-,\/*]/) !== -1) {
+    return false
+  }
+
+  const list = value.split(',')
+  return list.every((condition: string): boolean => {
+    const splits = condition.split('/')
+    if (splits.length > 2) {
+      return false
+    }
+
+    const [left, right] = splits
+    return isValidRange(left, start, stop) && isValidStep(right)
+  })
+}
+
+const hasValidSeconds = (seconds: string): boolean => {
+  return validateForRange(seconds, 0, 59)
+}
+
+const hasValidMinutes = (minutes: string): boolean => {
+  return validateForRange(minutes, 0, 59)
+}
+
+const hasValidHours = (hours: string): boolean => {
+  return validateForRange(hours, 0, 23)
+}
+
+const hasValidDays = (days: string): boolean => {
+  return validateForRange(days, 1, 31)
+}
+
+const monthAlias: { [key: string]: string } = {
+  jan: '1',
+  feb: '2',
+  mar: '3',
+  apr: '4',
+  may: '5',
+  jun: '6',
+  jul: '7',
+  aug: '8',
+  sep: '9',
+  oct: '10',
+  nov: '11',
+  dec: '12'
+}
+
+const hasValidMonths = (months: string, alias: boolean): boolean => {
+  // Prevents alias to be used as steps
+  if (months.search(/\/[a-zA-Z]/) !== -1) {
+    return false
+  }
+
+  if (alias) {
+    const remappedMonths = months.toLowerCase().replace(/[a-z]{3}/g, (match: string): string => {
+      return monthAlias[match] === undefined ? match : monthAlias[match]
+    })
+    // If any invalid alias was used, it won't pass the other checks as there will be non-numeric values in the months
+    return validateForRange(remappedMonths, 1, 12)
+  }
+
+  return validateForRange(months, 1, 12)
+}
+
+const weekdaysAlias: { [key: string]: string } = {
+  sun: '0',
+  mon: '1',
+  tue: '2',
+  wed: '3',
+  thu: '4',
+  fri: '5',
+  sat: '6'
+}
+
+const hasValidWeekdays = (weekdays: string, alias: boolean): boolean => {
+  // Prevents alias to be used as steps
+  if (weekdays.search(/\/[a-zA-Z]/) !== -1) {
+    return false
+  }
+
+  if (alias) {
+    const remappedWeekdays = weekdays.toLowerCase().replace(/[a-z]{3}/g, (match: string): string => {
+      return weekdaysAlias[match] === undefined ? match : weekdaysAlias[match]
+    })
+    // If any invalid alias was used, it won't pass the other checks as there will be non-numeric values in the weekdays
+    return validateForRange(remappedWeekdays, 0, 6)
+  }
+
+  return validateForRange(weekdays, 0, 6)
+}
+
+const split = (cron: string): string[] => {
+  return cron.trim().split(/\s+/)
+}
+
+type Options = {
+  alias: boolean
+  seconds: boolean
+}
+
+export const isValidCron = (cron: string, options: Options = { alias: false, seconds: false }): boolean => {
+  const splits = split(cron)
+
+  if (splits.length > (options.seconds ? 6 : 5) || splits.length < 5) {
+    return false
+  }
+
+  const checks: boolean[] = []
+  if (splits.length === 6) {
+    const seconds = splits.shift()
+    if (seconds) {
+      checks.push(hasValidSeconds(seconds))
+    }
+  }
+
+  // We could only check the steps gradually and return false on the first invalid block,
+  // However, this won't have any performance impact so why bother for now.
+  const [minutes, hours, days, months, weekdays] = splits
+  checks.push(hasValidMinutes(minutes))
+  checks.push(hasValidHours(hours))
+  checks.push(hasValidDays(days))
+  checks.push(hasValidMonths(months, options.alias))
+  checks.push(hasValidWeekdays(weekdays, options.alias))
+
+  return checks.every(Boolean)
+}
