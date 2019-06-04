@@ -363,4 +363,9 @@ describe('validate', () => {
     )
     expect(valid).toBeTruthy()
   })
+
+  it('should accept number prefixed with a 0', () => {
+    const valid = isValidCron('05 05 * * *')
+    expect(valid).toBeTruthy()
+  })
 })
