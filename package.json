@@ -20,7 +20,7 @@
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "jest --verbose --coverage",
     "build": "tsc",
-    "prepublish": "yarn lint && yarn test && yarn build"
+    "prepublish": "npm run lint && npm run test && npm run build"
   },
   "devDependencies": {
     "@types/jest": "^24.0.12",
