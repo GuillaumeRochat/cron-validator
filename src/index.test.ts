@@ -316,10 +316,10 @@ describe('validate', () => {
   })
 
   it('should not accept invalid step', () => {
-    const validSecond = isValidCron('1/10/20 * * * * *')
+    const validSecond = isValidCron('1/10/20 * * * * *', { seconds: true, alias: false })
     expect(validSecond).toBeFalsy()
 
-    const validMinute = isValidCron('1/10/20 * * * *', { seconds: true, alias: false })
+    const validMinute = isValidCron('1/10/20 * * * *')
     expect(validMinute).toBeFalsy()
 
     const validHour = isValidCron('* 1/10/20 * * *')
@@ -332,6 +332,26 @@ describe('validate', () => {
     expect(validMonth).toBeFalsy()
 
     const validWeekday = isValidCron('* * * * 0/2/6')
+    expect(validWeekday).toBeFalsy()
+  })
+
+  it('should not accept incomplete step', () => {
+    const validSecond = isValidCron('*/ * * * * *', { seconds: true, alias: false })
+    expect(validSecond).toBeFalsy()
+
+    const validMinute = isValidCron('*/ * * * *')
+    expect(validMinute).toBeFalsy()
+
+    const validHour = isValidCron('* */ * * *')
+    expect(validHour).toBeFalsy()
+
+    const validDay = isValidCron('* * */ * *')
+    expect(validDay).toBeFalsy()
+
+    const validMonth = isValidCron('* * * /* *')
+    expect(validMonth).toBeFalsy()
+
+    const validWeekday = isValidCron('* * * * */')
     expect(validWeekday).toBeFalsy()
   })
 
@@ -355,11 +375,31 @@ describe('validate', () => {
     expect(validWeekday).toBeFalsy()
   })
 
+  it('should not accept invalid range', () => {
+    const validSecond = isValidCron('1- * * * * *', { seconds: true, alias: true })
+    expect(validSecond).toBeFalsy()
+
+    const validMinute = isValidCron('1- * * * *')
+    expect(validMinute).toBeFalsy()
+
+    const validHour = isValidCron('* - * * *')
+    expect(validHour).toBeFalsy()
+
+    const validDay = isValidCron('* * 1- * *')
+    expect(validDay).toBeFalsy()
+
+    const validMonth = isValidCron('* * * -1 *')
+    expect(validMonth).toBeFalsy()
+
+    const validWeekday = isValidCron('* * * * 0-')
+    expect(validWeekday).toBeFalsy()
+  })
+
   it('should accept everything combined', () => {
     const valid = isValidCron(
-        // tslint:disable-next-line:max-line-length
-        '10,*/15,12-14,15-30/5 10,*/15,12-14,15-30/5 10,*/12,12-14,5-10/2 10,*/7,12-15,15-30/5 1,*/3,4-5,jun-oct/2 0,*/3,2-4,mon-fri/2',
-        { seconds: true, alias: true }
+      // tslint:disable-next-line:max-line-length
+      '10,*/15,12-14,15-30/5 10,*/15,12-14,15-30/5 10,*/12,12-14,5-10/2 10,*/7,12-15,15-30/5 1,*/3,4-5,jun-oct/2 0,*/3,2-4,mon-fri/2',
+      { seconds: true, alias: true }
     )
     expect(valid).toBeTruthy()
   })

@@ -31,10 +31,17 @@ const validateForRange = (value: string, start: number, stop: number): boolean =
   const list = value.split(',')
   return list.every((condition: string): boolean => {
     const splits = condition.split('/')
+    // Prevents `*/ * * * *` from being accepted.
+    if (condition.trim().endsWith('/')) {
+      return false
+    }
+
+    // Prevents `*/*/* * * * *` from being accepted
     if (splits.length > 2) {
       return false
     }
 
+    // If we don't have a `/`, right will be undefined which is considered a valid step if we don't a `/`.
     const [left, right] = splits
     return isValidRange(left, start, stop) && isValidStep(right)
   })
