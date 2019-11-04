@@ -26,13 +26,13 @@
     "prepublish": "npm run lint && npm run test && npm run build"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.12",
-    "jest": "^24.7.1",
-    "ts-jest": "^24.0.2",
-    "ts-node": "^8.1.0",
-    "tslint": "^5.16.0",
+    "@types/jest": "^24.0.21",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
     "tslint-config-standard": "^8.0.1",
-    "typescript": "^3.4.5"
+    "typescript": "^3.6.4"
   },
   "jest": {
     "moduleFileExtensions": [
