@@ -16,6 +16,9 @@
     "cron",
     "validation"
   ],
+  "files": [
+    "lib/*"
+  ],
   "scripts": {
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "jest --verbose --coverage",
