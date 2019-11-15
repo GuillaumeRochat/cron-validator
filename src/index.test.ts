@@ -12,7 +12,7 @@ describe('validate', () => {
   })
 
   it('should accept 6 symbols to support seconds if seconds option is true', () => {
-    const valid = isValidCron('* * * * * *', { seconds: true, alias: false })
+    const valid = isValidCron('* * * * * *', { seconds: true })
     expect(valid).toBeTruthy()
   })
 
@@ -27,24 +27,24 @@ describe('validate', () => {
   })
 
   it('should not accept seconds outside of 0-59', () => {
-    const at0 = isValidCron('0 * * * * *', { seconds: true, alias: false })
+    const at0 = isValidCron('0 * * * * *', { seconds: true })
     expect(at0).toBeTruthy()
 
-    const at59 = isValidCron('59 * * * * *', { seconds: true, alias: false })
+    const at59 = isValidCron('59 * * * * *', { seconds: true })
     expect(at59).toBeTruthy()
 
-    const above59 = isValidCron('60 * * * * *', { seconds: true, alias: false })
+    const above59 = isValidCron('60 * * * * *', { seconds: true })
     expect(above59).toBeFalsy()
   })
 
   it('should not accept minutes outside of 0-59', () => {
-    const at0 = isValidCron('* 0 * * * *', { seconds: true, alias: false })
+    const at0 = isValidCron('* 0 * * * *', { seconds: true })
     expect(at0).toBeTruthy()
 
-    const at596Symbols = isValidCron('* 59 * * * *', { seconds: true, alias: false })
+    const at596Symbols = isValidCron('* 59 * * * *', { seconds: true })
     expect(at596Symbols).toBeTruthy()
 
-    const above596Symbols = isValidCron('* 60 * * * *', { seconds: true, alias: false })
+    const above596Symbols = isValidCron('* 60 * * * *', { seconds: true })
     expect(above596Symbols).toBeFalsy()
 
     const at595Symbols = isValidCron('59 * * * *')
@@ -94,40 +94,40 @@ describe('validate', () => {
   })
 
   it('should accept month alias with the alias flag', () => {
-    const jan = isValidCron('* * * jan,JAN *', { seconds: false, alias: true })
+    const jan = isValidCron('* * * jan,JAN *', { alias: true })
     expect(jan).toBeTruthy()
 
-    const feb = isValidCron('* * * feb,FEB *', { seconds: false, alias: true })
+    const feb = isValidCron('* * * feb,FEB *', { alias: true })
     expect(feb).toBeTruthy()
 
-    const mar = isValidCron('* * * mar,MAR *', { seconds: false, alias: true })
+    const mar = isValidCron('* * * mar,MAR *', { alias: true })
     expect(mar).toBeTruthy()
 
-    const apr = isValidCron('* * * apr,APR *', { seconds: false, alias: true })
+    const apr = isValidCron('* * * apr,APR *', { alias: true })
     expect(apr).toBeTruthy()
 
-    const may = isValidCron('* * * may,MAY *', { seconds: false, alias: true })
+    const may = isValidCron('* * * may,MAY *', { alias: true })
     expect(may).toBeTruthy()
 
-    const jun = isValidCron('* * * jun,JUN *', { seconds: false, alias: true })
+    const jun = isValidCron('* * * jun,JUN *', { alias: true })
     expect(jun).toBeTruthy()
 
-    const jul = isValidCron('* * * jul,JUL *', { seconds: false, alias: true })
+    const jul = isValidCron('* * * jul,JUL *', { alias: true })
     expect(jul).toBeTruthy()
 
-    const aug = isValidCron('* * * aug,AUG *', { seconds: false, alias: true })
+    const aug = isValidCron('* * * aug,AUG *', { alias: true })
     expect(aug).toBeTruthy()
 
-    const sep = isValidCron('* * * sep,SEP *', { seconds: false, alias: true })
+    const sep = isValidCron('* * * sep,SEP *', { alias: true })
     expect(sep).toBeTruthy()
 
-    const oct = isValidCron('* * * oct,OCT *', { seconds: false, alias: true })
+    const oct = isValidCron('* * * oct,OCT *', { alias: true })
     expect(oct).toBeTruthy()
 
-    const nov = isValidCron('* * * nov,NOV *', { seconds: false, alias: true })
+    const nov = isValidCron('* * * nov,NOV *', { alias: true })
     expect(nov).toBeTruthy()
 
-    const dec = isValidCron('* * * dec,DEC *', { seconds: false, alias: true })
+    const dec = isValidCron('* * * dec,DEC *', { alias: true })
     expect(dec).toBeTruthy()
   })
 
@@ -137,12 +137,12 @@ describe('validate', () => {
   })
 
   it('should not accept invalid month alias', () => {
-    const valid = isValidCron('* * * january *', { seconds: false, alias: true })
+    const valid = isValidCron('* * * january *', { alias: true })
     expect(valid).toBeFalsy()
   })
 
   it('should not accept month alias as steps', () => {
-    const valid = isValidCron('* * * */jan *', { seconds: false, alias: true })
+    const valid = isValidCron('* * * */jan *', { alias: true })
     expect(valid).toBeFalsy()
   })
 
@@ -158,25 +158,25 @@ describe('validate', () => {
   })
 
   it('should accept weekdays alias with the alias flag', () => {
-    const sun = isValidCron('* * * * sun,SUN', { seconds: false, alias: true })
+    const sun = isValidCron('* * * * sun,SUN', { alias: true })
     expect(sun).toBeTruthy()
 
-    const mon = isValidCron('* * * * mon,MON', { seconds: false, alias: true })
+    const mon = isValidCron('* * * * mon,MON', { alias: true })
     expect(mon).toBeTruthy()
 
-    const tue = isValidCron('* * * * tue,TUE', { seconds: false, alias: true })
+    const tue = isValidCron('* * * * tue,TUE', { alias: true })
     expect(tue).toBeTruthy()
 
-    const wed = isValidCron('* * * * wed,WED', { seconds: false, alias: true })
+    const wed = isValidCron('* * * * wed,WED', { alias: true })
     expect(wed).toBeTruthy()
 
-    const thu = isValidCron('* * * * thu,THU', { seconds: false, alias: true })
+    const thu = isValidCron('* * * * thu,THU', { alias: true })
     expect(thu).toBeTruthy()
 
-    const fri = isValidCron('* * * * fri,FRI', { seconds: false, alias: true })
+    const fri = isValidCron('* * * * fri,FRI', { alias: true })
     expect(fri).toBeTruthy()
 
-    const sat = isValidCron('* * * * sat,SAT', { seconds: false, alias: true })
+    const sat = isValidCron('* * * * sat,SAT', { alias: true })
     expect(sat).toBeTruthy()
   })
 
@@ -186,17 +186,17 @@ describe('validate', () => {
   })
 
   it('should not accept invalid weekdays alias', () => {
-    const valid = isValidCron('* * * * sunday', { seconds: false, alias: true })
+    const valid = isValidCron('* * * * sunday', { alias: true })
     expect(valid).toBeFalsy()
   })
 
   it('should not accept weekdays alias as steps', () => {
-    const valid = isValidCron('* * * * */sun', { seconds: false, alias: true })
+    const valid = isValidCron('* * * * */sun', { alias: true })
     expect(valid).toBeFalsy()
   })
 
   it('should accepts ranges', () => {
-    const validSecond = isValidCron('1-10 * * * * *', { seconds: true, alias: false })
+    const validSecond = isValidCron('1-10 * * * * *', { seconds: true })
     expect(validSecond).toBeTruthy()
 
     const validMinute = isValidCron('1-10 * * * *')
@@ -216,7 +216,7 @@ describe('validate', () => {
   })
 
   it('should accept list of ranges', () => {
-    const validSecond = isValidCron('1-10,11-20,21-30 * * * * *', { seconds: true, alias: false })
+    const validSecond = isValidCron('1-10,11-20,21-30 * * * * *', { seconds: true })
     expect(validSecond).toBeTruthy()
 
     const validMinute = isValidCron('1-10,11-20,21-30 * * * *')
@@ -236,7 +236,7 @@ describe('validate', () => {
   })
 
   it('should not accept inverted ranges', () => {
-    const validSecond = isValidCron('10-1,20-11,30-21 * * * * *', { seconds: true, alias: false })
+    const validSecond = isValidCron('10-1,20-11,30-21 * * * * *', { seconds: true })
     expect(validSecond).toBeFalsy()
 
     const validMinute = isValidCron('10-1,20-11,30-21 * * * *')
@@ -256,7 +256,7 @@ describe('validate', () => {
   })
 
   it('should accept steps in ranges', () => {
-    const validSecond = isValidCron('1-10/2,21-30/2 * * * * *', { seconds: true, alias: false })
+    const validSecond = isValidCron('1-10/2,21-30/2 * * * * *', { seconds: true })
     expect(validSecond).toBeTruthy()
 
     const validMinute = isValidCron('1-10/2,11-20/2 * * * *')
@@ -276,7 +276,7 @@ describe('validate', () => {
   })
 
   it('should accept wildcards over steps in ranges', () => {
-    const validSecond = isValidCron('1-10,*/2 * * * * *', { seconds: true, alias: false })
+    const validSecond = isValidCron('1-10,*/2 * * * * *', { seconds: true })
     expect(validSecond).toBeTruthy()
 
     const validMinute = isValidCron('1-10,*/2 * * * *')
@@ -299,7 +299,7 @@ describe('validate', () => {
     const validSecond = isValidCron('1-10-20 * * * * *')
     expect(validSecond).toBeFalsy()
 
-    const validMinute = isValidCron('1-10-20 * * * *', { seconds: true, alias: false })
+    const validMinute = isValidCron('1-10-20 * * * *', { seconds: true })
     expect(validMinute).toBeFalsy()
 
     const validHour = isValidCron('* 1-10-20 * * *')
@@ -316,7 +316,7 @@ describe('validate', () => {
   })
 
   it('should not accept invalid step', () => {
-    const validSecond = isValidCron('1/10/20 * * * * *', { seconds: true, alias: false })
+    const validSecond = isValidCron('1/10/20 * * * * *', { seconds: true })
     expect(validSecond).toBeFalsy()
 
     const validMinute = isValidCron('1/10/20 * * * *')
@@ -336,7 +336,7 @@ describe('validate', () => {
   })
 
   it('should not accept incomplete step', () => {
-    const validSecond = isValidCron('*/ * * * * *', { seconds: true, alias: false })
+    const validSecond = isValidCron('*/ * * * * *', { seconds: true })
     expect(validSecond).toBeFalsy()
 
     const validMinute = isValidCron('*/ * * * *')
@@ -356,7 +356,7 @@ describe('validate', () => {
   })
 
   it('should not accept wildcards as range value', () => {
-    const validSecond = isValidCron('1-* * * * * *', { seconds: true, alias: false })
+    const validSecond = isValidCron('1-* * * * * *', { seconds: true })
     expect(validSecond).toBeFalsy()
 
     const validMinute = isValidCron('1-* * * * *')

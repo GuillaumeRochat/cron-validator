@@ -78,7 +78,7 @@ const monthAlias: { [key: string]: string } = {
   dec: '12'
 }
 
-const hasValidMonths = (months: string, alias: boolean): boolean => {
+const hasValidMonths = (months: string, alias?: boolean): boolean => {
   // Prevents alias to be used as steps
   if (months.search(/\/[a-zA-Z]/) !== -1) {
     return false
@@ -105,7 +105,7 @@ const weekdaysAlias: { [key: string]: string } = {
   sat: '6'
 }
 
-const hasValidWeekdays = (weekdays: string, alias: boolean): boolean => {
+const hasValidWeekdays = (weekdays: string, alias?: boolean): boolean => {
   // Prevents alias to be used as steps
   if (weekdays.search(/\/[a-zA-Z]/) !== -1) {
     return false
@@ -131,7 +131,14 @@ type Options = {
   seconds: boolean
 }
 
-export const isValidCron = (cron: string, options: Options = { alias: false, seconds: false }): boolean => {
+const defaultOptions: Options = {
+  alias: false,
+  seconds: false
+}
+
+export const isValidCron = (cron: string, options?: Partial<Options>): boolean => {
+  options = { ...defaultOptions, ...options }
+
   const splits = split(cron)
 
   if (splits.length > (options.seconds ? 6 : 5) || splits.length < 5) {
