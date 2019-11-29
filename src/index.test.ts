@@ -408,4 +408,25 @@ describe('validate', () => {
     const valid = isValidCron('05 05 * * *')
     expect(valid).toBeTruthy()
   })
+
+  it('should accept question marks in days', () => {
+    const valid = isValidCron('* * ? * *')
+    expect(valid).toBeTruthy()
+  })
+
+  it('should accept question marks in weekdays', () => {
+    const valid = isValidCron('* * * * ?')
+    expect(valid).toBeTruthy()
+
+    const validWithAliases = isValidCron('* * * * ?', { alias: true })
+    expect(validWithAliases).toBeTruthy()
+  })
+
+  it('should not accept question marks in days and weekdays at the same time', () => {
+    const valid = isValidCron('* * ? * ?')
+    expect(valid).toBeFalsy()
+
+    const validWithAliases = isValidCron('* * ? * ?', { alias: true })
+    expect(validWithAliases).toBeFalsy()
+  })
 })

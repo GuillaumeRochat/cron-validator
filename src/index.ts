@@ -2,6 +2,10 @@ const isWildcard = (value: string): boolean => {
   return value === '*'
 }
 
+const isQuestionMark = (value: string): boolean => {
+  return value === '?'
+}
+
 const isInRange = (value: number, start: number, stop: number): boolean => {
   return value >= start && value <= stop
 }
@@ -60,7 +64,7 @@ const hasValidHours = (hours: string): boolean => {
 }
 
 const hasValidDays = (days: string): boolean => {
-  return validateForRange(days, 1, 31)
+  return isQuestionMark(days) || validateForRange(days, 1, 31)
 }
 
 const monthAlias: { [key: string]: string } = {
@@ -106,6 +110,11 @@ const weekdaysAlias: { [key: string]: string } = {
 }
 
 const hasValidWeekdays = (weekdays: string, alias?: boolean): boolean => {
+
+  if (isQuestionMark(weekdays)) {
+    return true
+  }
+
   // Prevents alias to be used as steps
   if (weekdays.search(/\/[a-zA-Z]/) !== -1) {
     return false
@@ -120,6 +129,10 @@ const hasValidWeekdays = (weekdays: string, alias?: boolean): boolean => {
   }
 
   return validateForRange(weekdays, 0, 6)
+}
+
+const hasCompatibleDayFormat = (days: string, weekdays: string) => {
+  return !isQuestionMark(days) || !isQuestionMark(weekdays)
 }
 
 const split = (cron: string): string[] => {
@@ -161,6 +174,7 @@ export const isValidCron = (cron: string, options?: Partial<Options>): boolean =
   checks.push(hasValidDays(days))
   checks.push(hasValidMonths(months, options.alias))
   checks.push(hasValidWeekdays(weekdays, options.alias))
+  checks.push(hasCompatibleDayFormat(days, weekdays))
 
   return checks.every(Boolean)
 }
