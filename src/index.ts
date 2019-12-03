@@ -64,7 +64,7 @@ const hasValidHours = (hours: string): boolean => {
 }
 
 const hasValidDays = (days: string, allowBlankDay?: boolean): boolean => {
-  return allowBlankDay && isQuestionMark(days) || validateForRange(days, 1, 31)
+  return (allowBlankDay && isQuestionMark(days)) || validateForRange(days, 1, 31)
 }
 
 const monthAlias: { [key: string]: string } = {
