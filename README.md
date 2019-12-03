@@ -42,10 +42,23 @@ cron.isValidCron('* * * * mon', { alias: true });
 // true
 ```
 
+Likewise, the `allowBlankDay` flag can be enabled to mark days or weekdays blank with a `?` symbol:
+
+```js
+var cron = require('cron-validator');
+
+cron.isValidCron('* * * * ?');
+// false
+
+cron.isValidCron('* * * * ?', { alias: true });
+// true
+```
+
 ## Features
 
 - [x] Support seconds.
 - [x] Support alias.
+- [x] Support blank day notation with `?` symbol.
 - [ ] Have an explain mode returning the fragments in error.
 
 ## Motivations
