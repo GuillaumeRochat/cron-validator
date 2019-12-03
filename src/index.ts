@@ -63,8 +63,8 @@ const hasValidHours = (hours: string): boolean => {
   return validateForRange(hours, 0, 23)
 }
 
-const hasValidDays = (days: string): boolean => {
-  return isQuestionMark(days) || validateForRange(days, 1, 31)
+const hasValidDays = (days: string, allowBlankDay?: boolean): boolean => {
+  return allowBlankDay && isQuestionMark(days) || validateForRange(days, 1, 31)
 }
 
 const monthAlias: { [key: string]: string } = {
@@ -109,10 +109,13 @@ const weekdaysAlias: { [key: string]: string } = {
   sat: '6'
 }
 
-const hasValidWeekdays = (weekdays: string, alias?: boolean): boolean => {
+const hasValidWeekdays = (weekdays: string, alias?: boolean, allowBlankDay?: boolean): boolean => {
 
-  if (isQuestionMark(weekdays)) {
+  //
+  if (allowBlankDay && isQuestionMark(weekdays)) {
     return true
+  } else if (!allowBlankDay && isQuestionMark(weekdays)) {
+    return false
   }
 
   // Prevents alias to be used as steps
@@ -131,8 +134,8 @@ const hasValidWeekdays = (weekdays: string, alias?: boolean): boolean => {
   return validateForRange(weekdays, 0, 6)
 }
 
-const hasCompatibleDayFormat = (days: string, weekdays: string) => {
-  return !isQuestionMark(days) || !isQuestionMark(weekdays)
+const hasCompatibleDayFormat = (days: string, weekdays: string, allowBlankDay?: boolean) => {
+  return !(allowBlankDay && isQuestionMark(days) && isQuestionMark(weekdays))
 }
 
 const split = (cron: string): string[] => {
@@ -142,11 +145,13 @@ const split = (cron: string): string[] => {
 type Options = {
   alias: boolean
   seconds: boolean
+  allowBlankDay: boolean
 }
 
 const defaultOptions: Options = {
   alias: false,
-  seconds: false
+  seconds: false,
+  allowBlankDay: false
 }
 
 export const isValidCron = (cron: string, options?: Partial<Options>): boolean => {
@@ -171,10 +176,10 @@ export const isValidCron = (cron: string, options?: Partial<Options>): boolean =
   const [minutes, hours, days, months, weekdays] = splits
   checks.push(hasValidMinutes(minutes))
   checks.push(hasValidHours(hours))
-  checks.push(hasValidDays(days))
+  checks.push(hasValidDays(days, options.allowBlankDay))
   checks.push(hasValidMonths(months, options.alias))
-  checks.push(hasValidWeekdays(weekdays, options.alias))
-  checks.push(hasCompatibleDayFormat(days, weekdays))
+  checks.push(hasValidWeekdays(weekdays, options.alias, options.allowBlankDay))
+  checks.push(hasCompatibleDayFormat(days, weekdays, options.allowBlankDay))
 
   return checks.every(Boolean)
 }

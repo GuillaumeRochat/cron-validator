@@ -409,24 +409,35 @@ describe('validate', () => {
     expect(valid).toBeTruthy()
   })
 
-  it('should accept question marks in days', () => {
-    const valid = isValidCron('* * ? * *')
+  it('should not accept question marks in days if allowBlankDay is not set', () => {
+    const dayValid = isValidCron('* * ? * *')
+    expect(dayValid).toBeFalsy()
+
+    const weekDayValid = isValidCron('* * * * ?')
+    expect(weekDayValid).toBeFalsy()
+
+    const bothValid = isValidCron('* * ? * ?')
+    expect(bothValid).toBeFalsy()
+  })
+
+  it('should accept question marks in days if allowBlankDay is set', () => {
+    const valid = isValidCron('* * ? * *', { allowBlankDay: true })
     expect(valid).toBeTruthy()
   })
 
   it('should accept question marks in weekdays', () => {
-    const valid = isValidCron('* * * * ?')
+    const valid = isValidCron('* * * * ?', { allowBlankDay: true })
     expect(valid).toBeTruthy()
 
-    const validWithAliases = isValidCron('* * * * ?', { alias: true })
+    const validWithAliases = isValidCron('* * * * ?', { alias: true, allowBlankDay: true })
     expect(validWithAliases).toBeTruthy()
   })
 
-  it('should not accept question marks in days and weekdays at the same time', () => {
-    const valid = isValidCron('* * ? * ?')
+  it('should not accept question marks in days and weekdays at the same time if allowBlankDay is set', () => {
+    const valid = isValidCron('* * ? * ?', { allowBlankDay: true })
     expect(valid).toBeFalsy()
 
-    const validWithAliases = isValidCron('* * ? * ?', { alias: true })
+    const validWithAliases = isValidCron('* * ? * ?', { alias: true, allowBlankDay: true })
     expect(validWithAliases).toBeFalsy()
   })
 })
