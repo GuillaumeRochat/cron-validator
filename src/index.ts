@@ -111,7 +111,7 @@ const weekdaysAlias: { [key: string]: string } = {
 
 const hasValidWeekdays = (weekdays: string, alias?: boolean, allowBlankDay?: boolean): boolean => {
 
-  //
+  // If there is a question mark, checks if the allowBlankDay flag is set
   if (allowBlankDay && isQuestionMark(weekdays)) {
     return true
   } else if (!allowBlankDay && isQuestionMark(weekdays)) {
