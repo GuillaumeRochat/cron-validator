@@ -50,7 +50,7 @@ var cron = require('cron-validator');
 cron.isValidCron('* * * * ?');
 // false
 
-cron.isValidCron('* * * * ?', { alias: true });
+cron.isValidCron('* * * * ?', { allowBlankDay: true });
 // true
 ```
 
