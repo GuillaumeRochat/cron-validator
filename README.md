@@ -10,10 +10,20 @@ npm install cron-validator
 
 ## Usage
 
+Require syntax:
+
 ```js
-var cron = require('cron-validator');
+const cron = require('cron-validator');
 
 if (cron.isValidCron('* * * * *')) {
+    // Do something
+}
+```
+Or import syntax with TypeScript:
+```ts
+import { isValidCron } from 'cron-validator'
+
+if (isValidCron('* * * * *') {
     // Do something
 }
 ```
@@ -21,7 +31,7 @@ if (cron.isValidCron('* * * * *')) {
 Support for seconds can be enabled by passing the `seconds` flag as true in options:
 
 ```js
-var cron = require('cron-validator');
+const cron = require('cron-validator');
 
 cron.isValidCron('* * * * * *');
 // false
@@ -33,7 +43,7 @@ cron.isValidCron('* * * * * *', { seconds: true });
 The same goes to enable the `alias` support for months and weekdays:
 
 ```js
-var cron = require('cron-validator');
+const cron = require('cron-validator');
 
 cron.isValidCron('* * * * mon');
 // false
@@ -45,7 +55,7 @@ cron.isValidCron('* * * * mon', { alias: true });
 Likewise, the `allowBlankDay` flag can be enabled to mark days or weekdays blank with a `?` symbol:
 
 ```js
-var cron = require('cron-validator');
+const cron = require('cron-validator');
 
 cron.isValidCron('* * * * ?');
 // false
