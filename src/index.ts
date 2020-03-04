@@ -1,3 +1,13 @@
+// This comes from the fact that parseInt trims characters coming
+// after digits and consider it a valid int, so `1*` becomes `1`.
+const safeParseInt = (value: string): number => {
+  if (/^\d+$/.test(value)) {
+    return Number(value)
+  } else {
+    return NaN
+  }
+}
+
 const isWildcard = (value: string): boolean => {
   return value === '*'
 }
@@ -14,9 +24,9 @@ const isValidRange = (value: string, start: number, stop: number): boolean => {
   const sides = value.split('-')
   switch (sides.length) {
     case 1:
-      return isWildcard(value) || isInRange(parseInt(value, 10), start, stop)
+      return isWildcard(value) || isInRange(safeParseInt(value), start, stop)
     case 2:
-      const [small, big] = sides.map((side: string): number => parseInt(side, 10))
+      const [small, big] = sides.map((side: string): number => safeParseInt(side))
       return small <= big && isInRange(small, start, stop) && isInRange(big, start, stop)
     default:
       return false

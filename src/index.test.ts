@@ -26,6 +26,20 @@ describe('validate', () => {
     expect(valid).toBeTruthy()
   })
 
+  it('should not accept scalar ending with a wildcard', () => {
+    const wildcardAfterMinute = isValidCron('1* * * * *')
+    expect(wildcardAfterMinute).toBeFalsy()
+
+    const wildcardAfterHour = isValidCron('* 1* * * *')
+    expect(wildcardAfterHour).toBeFalsy()
+
+    const wildcardBeforeMinute = isValidCron('*1 * * * *')
+    expect(wildcardBeforeMinute).toBeFalsy()
+
+    const wildcardBeforeHour = isValidCron('* *1 * * *')
+    expect(wildcardBeforeHour).toBeFalsy()
+  })
+
   it('should not accept seconds outside of 0-59', () => {
     const at0 = isValidCron('0 * * * * *', { seconds: true })
     expect(at0).toBeTruthy()
