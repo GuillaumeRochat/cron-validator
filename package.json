@@ -23,16 +23,16 @@
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "jest --verbose --coverage",
     "build": "tsc",
-    "prepublish": "npm run lint && npm run test && npm run build"
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.23",
-    "jest": "^24.9.0",
-    "ts-jest": "^24.2.0",
-    "ts-node": "^8.5.4",
-    "tslint": "^5.20.1",
-    "tslint-config-standard": "^8.0.1",
-    "typescript": "^3.7.3"
+    "@types/jest": "^25.1.4",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
+    "ts-node": "^8.6.2",
+    "tslint": "^6.1.0",
+    "tslint-config-standard": "^9.0.0",
+    "typescript": "^3.8.3"
   },
   "jest": {
     "moduleFileExtensions": [
