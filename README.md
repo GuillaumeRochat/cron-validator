@@ -23,7 +23,7 @@ Or import syntax with TypeScript:
 ```ts
 import { isValidCron } from 'cron-validator'
 
-if (isValidCron('* * * * *') {
+if (isValidCron('* * * * *')) {
     // Do something
 }
 ```
