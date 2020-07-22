@@ -2,6 +2,11 @@
 
 Cron Validator is a util that allows you to validate a cron expression, similar to what [crontab guru](https://crontab.guru) does, but in your code base.
 
+## Alternatives
+
+- [cron-validate](https://github.com/Airfooox/cron-validate):
+  It has more features and configuration options to restrict ranges, or create presets of configs. It includes an AWS preset that should match AWS Schedule Expressions.
+
 ## Installation
 
 ```
@@ -69,7 +74,7 @@ cron.isValidCron('* * * * ?', { allowBlankDay: true });
 - [x] Support seconds.
 - [x] Support alias.
 - [x] Support blank day notation with `?` symbol.
-- [ ] Have an explain mode returning the fragments in error.
+- [ ] ~~Have an explain mode returning the fragments in error.~~
 
 ## Motivations
 
