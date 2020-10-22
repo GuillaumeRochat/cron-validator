@@ -69,11 +69,24 @@ cron.isValidCron('* * * * ?', { allowBlankDay: true });
 // true
 ```
 
+The `allowSevenAsSunday` flag can be enabled to enable support for digit 7 as Sunday:
+
+```js
+const cron = require('cron-validator');
+
+cron.isValidCron('* * * * 7');
+// false
+
+cron.isValidCron('* * * * 7', { allowSevenAsSunday: true });
+// true
+```
+
 ## Features
 
 - [x] Support seconds.
 - [x] Support alias.
 - [x] Support blank day notation with `?` symbol.
+- [x] Support both 0-6 and 1-7 ranges for weekdays.
 - [ ] ~~Have an explain mode returning the fragments in error.~~
 
 ## Motivations

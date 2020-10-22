@@ -119,7 +119,7 @@ const weekdaysAlias: { [key: string]: string } = {
   sat: '6'
 }
 
-const hasValidWeekdays = (weekdays: string, alias?: boolean, allowBlankDay?: boolean): boolean => {
+const hasValidWeekdays = (weekdays: string, alias?: boolean, allowBlankDay?: boolean, allowSevenAsSunday?: boolean): boolean => {
 
   // If there is a question mark, checks if the allowBlankDay flag is set
   if (allowBlankDay && isQuestionMark(weekdays)) {
@@ -138,10 +138,10 @@ const hasValidWeekdays = (weekdays: string, alias?: boolean, allowBlankDay?: boo
       return weekdaysAlias[match] === undefined ? match : weekdaysAlias[match]
     })
     // If any invalid alias was used, it won't pass the other checks as there will be non-numeric values in the weekdays
-    return validateForRange(remappedWeekdays, 0, 6)
+    return validateForRange(remappedWeekdays, 0, allowSevenAsSunday ? 7 : 6)
   }
 
-  return validateForRange(weekdays, 0, 6)
+  return validateForRange(weekdays, 0, allowSevenAsSunday ? 7 : 6)
 }
 
 const hasCompatibleDayFormat = (days: string, weekdays: string, allowBlankDay?: boolean) => {
@@ -156,12 +156,14 @@ type Options = {
   alias: boolean
   seconds: boolean
   allowBlankDay: boolean
+  allowSevenAsSunday: boolean
 }
 
 const defaultOptions: Options = {
   alias: false,
   seconds: false,
-  allowBlankDay: false
+  allowBlankDay: false,
+  allowSevenAsSunday: false
 }
 
 export const isValidCron = (cron: string, options?: Partial<Options>): boolean => {
@@ -188,7 +190,7 @@ export const isValidCron = (cron: string, options?: Partial<Options>): boolean =
   checks.push(hasValidHours(hours))
   checks.push(hasValidDays(days, options.allowBlankDay))
   checks.push(hasValidMonths(months, options.alias))
-  checks.push(hasValidWeekdays(weekdays, options.alias, options.allowBlankDay))
+  checks.push(hasValidWeekdays(weekdays, options.alias, options.allowBlankDay, options.allowSevenAsSunday))
   checks.push(hasCompatibleDayFormat(days, weekdays, options.allowBlankDay))
 
   return checks.every(Boolean)
