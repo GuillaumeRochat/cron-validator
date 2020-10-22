@@ -171,6 +171,11 @@ describe('validate', () => {
     expect(at7).toBeFalsy()
   })
 
+  it('should accept 7 days of week with the allowSevenAsSunday flag', () => {
+    const at7 = isValidCron('* * * * 7', { allowSevenAsSunday: true })
+    expect(at7).toBeTruthy()
+  })
+
   it('should accept weekdays alias with the alias flag', () => {
     const sun = isValidCron('* * * * sun,SUN', { alias: true })
     expect(sun).toBeTruthy()
