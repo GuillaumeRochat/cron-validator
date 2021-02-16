@@ -34,7 +34,7 @@ const isValidRange = (value: string, start: number, stop: number): boolean => {
 }
 
 const isValidStep = (value: string | undefined): boolean => {
-  return value === undefined || value.search(/[^\d]/) === -1
+  return value === undefined || (value.search(/[^\d]/) === -1 && safeParseInt(value) > 0)
 }
 
 const validateForRange = (value: string, start: number, stop: number): boolean => {

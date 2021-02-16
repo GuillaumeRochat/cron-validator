@@ -314,6 +314,26 @@ describe('validate', () => {
     expect(validWeekday).toBeTruthy()
   })
 
+  it('should not accept steps below 1', () => {
+    const validSecond = isValidCron('1-10,*/0 * * * * *', { seconds: true })
+    expect(validSecond).toBeFalsy()
+
+    const validMinute = isValidCron('1-10,*/0 * * * *')
+    expect(validMinute).toBeFalsy()
+
+    const validHour = isValidCron('* 1-10,*/0 * * *')
+    expect(validHour).toBeFalsy()
+
+    const validDay = isValidCron('* * 1-10,*/0 * *')
+    expect(validDay).toBeFalsy()
+
+    const validMonth = isValidCron('* * * 1-2,*/0 *')
+    expect(validMonth).toBeFalsy()
+
+    const validWeekday = isValidCron('* * * * 0-2,*/-1')
+    expect(validWeekday).toBeFalsy()
+  })
+
   it('should not accept an invalid range', () => {
     const validSecond = isValidCron('1-10-20 * * * * *')
     expect(validSecond).toBeFalsy()
