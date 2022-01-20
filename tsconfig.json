@@ -10,6 +10,7 @@
         "declaration": true,
         "noEmit": false,
         "sourceMap": true,
+        "inlineSources": true,
 
         "strict": true,
         "noUnusedLocals": true,
