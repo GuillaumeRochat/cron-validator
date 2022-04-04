@@ -186,12 +186,14 @@ export const isValidCron = (cron: string, options?: Partial<Options>): boolean =
   // We could only check the steps gradually and return false on the first invalid block,
   // However, this won't have any performance impact so why bother for now.
   const [minutes, hours, days, months, weekdays] = splits
-  checks.push(hasValidMinutes(minutes))
-  checks.push(hasValidHours(hours))
-  checks.push(hasValidDays(days, options.allowBlankDay))
-  checks.push(hasValidMonths(months, options.alias))
-  checks.push(hasValidWeekdays(weekdays, options.alias, options.allowBlankDay, options.allowSevenAsSunday))
-  checks.push(hasCompatibleDayFormat(days, weekdays, options.allowBlankDay))
+  checks.push(
+    hasValidMinutes(minutes),
+    hasValidHours(hours),
+    hasValidDays(days, options.allowBlankDay),
+    hasValidMonths(months, options.alias),
+    hasValidWeekdays(weekdays, options.alias, options.allowBlankDay, options.allowSevenAsSunday),
+    hasCompatibleDayFormat(days, weekdays, options.allowBlankDay)
+  )
 
   return checks.every(Boolean)
 }
