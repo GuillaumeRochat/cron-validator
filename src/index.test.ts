@@ -479,4 +479,90 @@ describe('validate', () => {
     const validWithAliases = isValidCron('* * ? * ?', { alias: true, allowBlankDay: true })
     expect(validWithAliases).toBeFalsy()
   })
+
+  it('should not accept H if allowHashed is not set', () => {
+    const valid = isValidCron('H * * * *')
+    expect(valid).toBeFalsy()
+
+    const validWithSeconds = isValidCron('* * H * * *', {seconds: true} )
+    expect(validWithSeconds).toBeFalsy()
+
+    const validWithAlias = isValidCron('* * H * THU', {alias: true} )
+    expect(validWithAlias).toBeFalsy()
+  })
+
+  it('should accept H if allowHashed is set', () => {
+    const valid = isValidCron('H * * * *', {allowHashed: true})
+    expect(valid).toBeTruthy()
+
+    const validWithSeconds = isValidCron('* * H * * *', {allowHashed: true, seconds: true} )
+    expect(validWithSeconds).toBeTruthy()
+
+    const validWithAlias = isValidCron('* * H * THU', {allowHashed: true, alias: true} )
+    expect(validWithAlias).toBeTruthy()
+  })
+
+  it('should not accept H with ranges if allowHashed is not set', () => {
+    const valid = isValidCron('H(0-20) * * * *')
+    expect(valid).toBeFalsy()
+
+    const validWithSeconds = isValidCron('* * H(10-15) * * *', {seconds: true} )
+    expect(validWithSeconds).toBeFalsy()
+
+    const validWithAlias = isValidCron('* * H(1-8) * THU', {alias: true} )
+    expect(validWithAlias).toBeFalsy()
+  })
+
+  it('should accept H with ranges if allowHashed is set', () => {
+    const valid = isValidCron('H(0-20) * * * *', {allowHashed: true})
+    expect(valid).toBeTruthy()
+
+    const validWithSeconds = isValidCron('* * H(10-15) * * *', {allowHashed: true, seconds: true} )
+    expect(validWithSeconds).toBeTruthy()
+
+    const validWithAlias = isValidCron('* * H(1-8) * THU', {allowHashed: true, alias: true} )
+    expect(validWithAlias).toBeTruthy()
+  })
+
+  it('should not accept H with invalid ranges even if allowHashed is set', () => {
+    const valid = isValidCron('H(0-61) * * * *', {allowHashed: true})
+    expect(valid).toBeFalsy()
+
+    const validWithSeconds = isValidCron('* * H(0-25) * * *', {allowHashed: true, seconds: true} )
+    expect(validWithSeconds).toBeFalsy()
+
+    const validWithAlias = isValidCron('* * H(0-8) * THU', {allowHashed: true, alias: true} )
+    expect(validWithAlias).toBeFalsy()
+
+    const validWithWrongDOM = isValidCron('* * H(1-31) * THU', {allowHashed: true, alias: true} )
+    expect(validWithWrongDOM).toBeFalsy()
+  })
+
+  it('should accept H with iterators if allowHashed is set', () => {
+    const valid = isValidCron('H/8 * * * *', {allowHashed: true})
+    expect(valid).toBeTruthy()
+
+    const validWithSeconds = isValidCron('* * H(10-15)/2 * * *', {allowHashed: true, seconds: true} )
+    expect(validWithSeconds).toBeTruthy()
+
+    const validWithAlias = isValidCron('* * H/4 * THU', {allowHashed: true, alias: true} )
+    expect(validWithAlias).toBeTruthy()
+
+    const validWithWrongIterator = isValidCron('* * H/8 * THU', {allowHashed: true, alias: true} )
+    expect(validWithWrongIterator).toBeFalsy()
+  })
+
+  it('should not accept H in a range if allowHashed is set', () => {
+    const valid = isValidCron('H-8 * * * *', {allowHashed: true})
+    expect(valid).toBeFalsy()
+
+    const validWithSeconds = isValidCron('* * H-2 * * *', {allowHashed: true, seconds: true} )
+    expect(validWithSeconds).toBeFalsy()
+
+    const validWithAlias = isValidCron('* * H-4 * THU', {allowHashed: true, alias: true} )
+    expect(validWithAlias).toBeFalsy()
+  })
+
+  // TODO: Decide if multiple H in one field should be supported? Would only work properly if their ranges were starting at different points
+
 })
