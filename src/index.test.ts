@@ -550,6 +550,13 @@ describe('validate', () => {
 
     const validWithWrongIterator = isValidCron('* * H/8 * THU', {allowHashed: true, alias: true} )
     expect(validWithWrongIterator).toBeFalsy()
+
+    // TODO: Allow H as a step val?
+    const validWithHstep = isValidCron('* * 4/H * *', {allowHashed: true} )
+    expect(validWithHstep).toBeTruthy()
+
+    const validWithHstep2 = isValidCron('* * 4/H(1-5) * *', {allowHashed: true} )
+    expect(validWithHstep2).toBeTruthy()
   })
 
   it('should not accept H in a range if allowHashed is set', () => {
