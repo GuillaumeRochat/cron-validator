@@ -20,8 +20,23 @@ const isInRange = (value: number, start: number, stop: number): boolean => {
   return value >= start && value <= stop
 }
 
-const isValidRange = (value: string, start: number, stop: number): boolean => {
+const isValidHashed = (value: string[], start: number, stop: number): boolean => {
+  switch (value.length) {
+    case 1:
+      return value[0] === "H"
+    case 2:
+      // H Range: Has to start with H(, integers in range need to be valid, end has to be /\d\)/
+      return value[0].slice(0,2) === "H(" && isInRange(safeParseInt( value[0].slice(2) ), start, stop) && isInRange(safeParseInt(value[1].slice(0,-1)), start, stop) && value[1].search(/\d+\)/) === 0
+    default:
+      return false
+  }
+}
+
+const isValidRange = (value: string, start: number, stop: number, allowHashed?: boolean): boolean => {
   const sides = value.split('-')
+  if (allowHashed && sides[0].slice(0,1) === "H") {
+    return isValidHashed(sides, start, stop)
+  }
   switch (sides.length) {
     case 1:
       return isWildcard(value) || isInRange(safeParseInt(value), start, stop)
@@ -37,8 +52,8 @@ const isValidStep = (value: string | undefined): boolean => {
   return value === undefined || (value.search(/[^\d]/) === -1 && safeParseInt(value) > 0)
 }
 
-const validateForRange = (value: string, start: number, stop: number): boolean => {
-  if (value.search(/[^\d-,\/*]/) !== -1) {
+const validateForRange = (value: string, start: number, stop: number, allowHashed?: boolean): boolean => {
+  if (value.search(/[^\d-,\/*H()]/) !== -1) {
     return false
   }
 
@@ -57,24 +72,24 @@ const validateForRange = (value: string, start: number, stop: number): boolean =
 
     // If we don't have a `/`, right will be undefined which is considered a valid step if we don't a `/`.
     const [left, right] = splits
-    return isValidRange(left, start, stop) && isValidStep(right)
+    return isValidRange(left, start, stop, allowHashed) && isValidStep(right)
   })
 }
 
-const hasValidSeconds = (seconds: string): boolean => {
-  return validateForRange(seconds, 0, 59)
+const hasValidSeconds = (seconds: string, allowHashed?: boolean): boolean => {
+  return validateForRange(seconds, 0, 59, allowHashed)
 }
 
-const hasValidMinutes = (minutes: string): boolean => {
-  return validateForRange(minutes, 0, 59)
+const hasValidMinutes = (minutes: string, allowHashed?: boolean): boolean => {
+  return validateForRange(minutes, 0, 59, allowHashed)
 }
 
-const hasValidHours = (hours: string): boolean => {
-  return validateForRange(hours, 0, 23)
+const hasValidHours = (hours: string, allowHashed?: boolean): boolean => {
+  return validateForRange(hours, 0, 23, allowHashed)
 }
 
-const hasValidDays = (days: string, allowBlankDay?: boolean): boolean => {
-  return (allowBlankDay && isQuestionMark(days)) || validateForRange(days, 1, 31)
+const hasValidDays = (days: string, allowBlankDay?: boolean, allowHashed?: boolean): boolean => {
+  return (allowBlankDay && isQuestionMark(days)) || validateForRange(days, 1, 31, allowHashed)
 }
 
 const monthAlias: { [key: string]: string } = {
@@ -92,7 +107,7 @@ const monthAlias: { [key: string]: string } = {
   dec: '12'
 }
 
-const hasValidMonths = (months: string, alias?: boolean): boolean => {
+const hasValidMonths = (months: string, alias?: boolean, allowHashed?: boolean): boolean => {
   // Prevents alias to be used as steps
   if (months.search(/\/[a-zA-Z]/) !== -1) {
     return false
@@ -103,10 +118,10 @@ const hasValidMonths = (months: string, alias?: boolean): boolean => {
       return monthAlias[match] === undefined ? match : monthAlias[match]
     })
     // If any invalid alias was used, it won't pass the other checks as there will be non-numeric values in the months
-    return validateForRange(remappedMonths, 1, 12)
+    return validateForRange(remappedMonths, 1, 12, allowHashed)
   }
 
-  return validateForRange(months, 1, 12)
+  return validateForRange(months, 1, 12, allowHashed)
 }
 
 const weekdaysAlias: { [key: string]: string } = {
@@ -119,7 +134,7 @@ const weekdaysAlias: { [key: string]: string } = {
   sat: '6'
 }
 
-const hasValidWeekdays = (weekdays: string, alias?: boolean, allowBlankDay?: boolean, allowSevenAsSunday?: boolean): boolean => {
+const hasValidWeekdays = (weekdays: string, alias?: boolean, allowBlankDay?: boolean, allowSevenAsSunday?: boolean, allowHashed?: boolean): boolean => {
 
   // If there is a question mark, checks if the allowBlankDay flag is set
   if (allowBlankDay && isQuestionMark(weekdays)) {
@@ -138,10 +153,10 @@ const hasValidWeekdays = (weekdays: string, alias?: boolean, allowBlankDay?: boo
       return weekdaysAlias[match] === undefined ? match : weekdaysAlias[match]
     })
     // If any invalid alias was used, it won't pass the other checks as there will be non-numeric values in the weekdays
-    return validateForRange(remappedWeekdays, 0, allowSevenAsSunday ? 7 : 6)
+    return validateForRange(remappedWeekdays, 0, allowSevenAsSunday ? 7 : 6, allowHashed)
   }
 
-  return validateForRange(weekdays, 0, allowSevenAsSunday ? 7 : 6)
+  return validateForRange(weekdays, 0, allowSevenAsSunday ? 7 : 6, allowHashed)
 }
 
 const hasCompatibleDayFormat = (days: string, weekdays: string, allowBlankDay?: boolean) => {
@@ -157,13 +172,15 @@ type Options = {
   seconds: boolean
   allowBlankDay: boolean
   allowSevenAsSunday: boolean
+  allowHashed: boolean
 }
 
 const defaultOptions: Options = {
   alias: false,
   seconds: false,
   allowBlankDay: false,
-  allowSevenAsSunday: false
+  allowSevenAsSunday: false,
+  allowHashed: false
 }
 
 export const isValidCron = (cron: string, options?: Partial<Options>): boolean => {
@@ -179,18 +196,18 @@ export const isValidCron = (cron: string, options?: Partial<Options>): boolean =
   if (splits.length === 6) {
     const seconds = splits.shift()
     if (seconds) {
-      checks.push(hasValidSeconds(seconds))
+      checks.push(hasValidSeconds(seconds, options.allowHashed))
     }
   }
 
   // We could only check the steps gradually and return false on the first invalid block,
   // However, this won't have any performance impact so why bother for now.
   const [minutes, hours, days, months, weekdays] = splits
-  checks.push(hasValidMinutes(minutes))
-  checks.push(hasValidHours(hours))
-  checks.push(hasValidDays(days, options.allowBlankDay))
-  checks.push(hasValidMonths(months, options.alias))
-  checks.push(hasValidWeekdays(weekdays, options.alias, options.allowBlankDay, options.allowSevenAsSunday))
+  checks.push(hasValidMinutes(minutes, options.allowHashed))
+  checks.push(hasValidHours(hours, options.allowHashed))
+  checks.push(hasValidDays(days, options.allowBlankDay, options.allowHashed))
+  checks.push(hasValidMonths(months, options.alias, options.allowHashed))
+  checks.push(hasValidWeekdays(weekdays, options.alias, options.allowBlankDay, options.allowSevenAsSunday, options.allowHashed))
   checks.push(hasCompatibleDayFormat(days, weekdays, options.allowBlankDay))
 
   return checks.every(Boolean)
