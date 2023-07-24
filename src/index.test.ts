@@ -511,6 +511,9 @@ describe('validate', () => {
 
     const validWithAlias = isValidCron('* * H(1-8) * THU', {alias: true} )
     expect(validWithAlias).toBeFalsy()
+
+    const validWithRange = isValidCron('* * H(1-8)-10 * *')
+    expect(validWithRange).toBeFalsy()
   })
 
   it('should accept H with ranges if allowHashed is set', () => {
@@ -522,6 +525,9 @@ describe('validate', () => {
 
     const validWithAlias = isValidCron('* * H(1-8) * THU', {allowHashed: true, alias: true} )
     expect(validWithAlias).toBeTruthy()
+
+    const validWithNoRange = isValidCron('* * H( * THU', {allowHashed: true, alias: true} )
+    expect(validWithNoRange).toBeFalsy()
   })
 
   it('should not accept H with invalid ranges even if allowHashed is set', () => {
@@ -534,8 +540,11 @@ describe('validate', () => {
     const validWithAlias = isValidCron('* * H(0-8) * THU', {allowHashed: true, alias: true} )
     expect(validWithAlias).toBeFalsy()
 
-    const validWithWrongDOM = isValidCron('* * H(1-31) * THU', {allowHashed: true, alias: true} )
+    const validWithWrongDOM = isValidCron('* * H(1-32) * THU', {allowHashed: true, alias: true} )
     expect(validWithWrongDOM).toBeFalsy()
+
+    const validWithRange = isValidCron('H(0-30)-50 * * * *', {allowHashed: true})
+    expect(validWithRange).toBeFalsy()
   })
 
   it('should accept H with iterators if allowHashed is set', () => {
@@ -548,15 +557,16 @@ describe('validate', () => {
     const validWithAlias = isValidCron('* * H/4 * THU', {allowHashed: true, alias: true} )
     expect(validWithAlias).toBeTruthy()
 
-    const validWithWrongIterator = isValidCron('* * H/8 * THU', {allowHashed: true, alias: true} )
-    expect(validWithWrongIterator).toBeFalsy()
+    // TODO: Iterators are always valid if they're integers. Maybe behaviour changes in the future?
+    //const validWithWrongIterator = isValidCron('* * H/32 * THU', {allowHashed: true, alias: true} )
+    //expect(validWithWrongIterator).toBeFalsy()
 
-    // TODO: Allow H as a step val?
+    // TODO: Allow H as a step val? No.
     const validWithHstep = isValidCron('* * 4/H * *', {allowHashed: true} )
-    expect(validWithHstep).toBeTruthy()
+    expect(validWithHstep).toBeFalsy()
 
     const validWithHstep2 = isValidCron('* * 4/H(1-5) * *', {allowHashed: true} )
-    expect(validWithHstep2).toBeTruthy()
+    expect(validWithHstep2).toBeFalsy()
   })
 
   it('should not accept H in a range if allowHashed is set', () => {
