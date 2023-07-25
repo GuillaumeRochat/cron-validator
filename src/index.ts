@@ -173,6 +173,7 @@ type Options = {
   allowBlankDay: boolean
   allowSevenAsSunday: boolean
   allowHashed: boolean
+  allowLast: boolean
 }
 
 const defaultOptions: Options = {
@@ -180,7 +181,8 @@ const defaultOptions: Options = {
   seconds: false,
   allowBlankDay: false,
   allowSevenAsSunday: false,
-  allowHashed: false
+  allowHashed: false,
+  allowLast: false
 }
 
 export const isValidCron = (cron: string, options?: Partial<Options>): boolean => {

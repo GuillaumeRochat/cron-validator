@@ -582,4 +582,37 @@ describe('validate', () => {
 
   // TODO: Decide if multiple H in one field should be supported? Would only work properly if their ranges were starting at different points
 
+  it('should not accept L if allowLast is not set', () => {
+    const valid = isValidCron('* * L * *')
+    expect(valid).toBeFalsy()
+
+    const validWithSeconds = isValidCron('* * * L * *', {seconds: true})
+    expect(validWithSeconds).toBeFalsy()
+
+    const validWithAlias = isValidCron('* * L * WED', {alias: true})
+    expect(validWithAlias).toBeFalsy()
+
+    const validWithWrongField = isValidCron('* L * * *')
+    expect(validWithWrongField).toBeFalsy()
+  })
+
+  it('should accept L in DOM and DOW if allowLast is set', () => {
+    const validDOM = isValidCron('* * L * *', {allowLast: true})
+    expect(validDOM).toBeTruthy()
+
+    const validDOMOffset = isValidCron('* * L-2 * *', {allowLast: true})
+    expect(validDOMOffset).toBeTruthy()
+
+    const validDOW = isValidCron('* * * * L', {allowLast: true})
+    expect(validDOW).toBeTruthy()
+
+    const validDOWDay = isValidCron('* * * * 2L', {allowLast: true})
+    expect(validDOWDay).toBeTruthy()
+
+    const validWithWrongField = isValidCron('* L * * *', {allowLast: true})
+    expect(validWithWrongField).toBeFalsy()
+
+    const validWithSeconds = isValidCron('L * * * * *', {allowLast: true, seconds: true})
+    expect(validWithSeconds).toBeFalsy()
+  })
 })
