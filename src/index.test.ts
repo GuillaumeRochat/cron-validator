@@ -647,4 +647,51 @@ describe('validate', () => {
     const validDOMDay = isValidCron('* * * 3L * 2L', {allowLast: true, seconds: true})
     expect(validDOMDay).toBeFalsy()
   })
+
+  it('should not accept W if allowWeekdays is not set', () => {
+    const validDOM = isValidCron('* * 1W * *')
+    expect(validDOM).toBeFalsy()
+
+    const validDOW = isValidCron('* * * 5W * *', {seconds: true})
+    expect(validDOW).toBeFalsy()
+
+    const validDOWDay = isValidCron('* * 2W * THU', {alias: true})
+    expect(validDOWDay).toBeFalsy()
+
+    const validDOMDay = isValidCron('* * * 3W * 2L', {allowLast: true, seconds: true})
+    expect(validDOMDay).toBeFalsy()
+  })
+
+  it('should accept W if allowWeekdays is set', () => {
+    const validDOM = isValidCron('* * 1W * *', {allowWeekday: true})
+    expect(validDOM).toBeTruthy()
+
+    const validDOW = isValidCron('* * * 5W * *', {allowWeekday: true, seconds: true})
+    expect(validDOW).toBeTruthy()
+
+    const validDOWDay = isValidCron('* * 2W * THU', {allowWeekday: true, alias: true})
+    expect(validDOWDay).toBeTruthy()
+
+    const validDOMDay = isValidCron('* * * 3W * *', {allowWeekday: true, seconds: true})
+    expect(validDOMDay).toBeTruthy()
+  })
+
+  it('should not accept W in invalid fields or combinations', () => {
+    const validDOM = isValidCron('* * * 1W *', {allowWeekday: true})
+    expect(validDOM).toBeFalsy()
+
+    const validDOW = isValidCron('* * * 32W * *', {allowWeekday: true, seconds: true})
+    expect(validDOW).toBeFalsy()
+
+    const validDOWDay = isValidCron('* * 2W-5 * THU', {allowWeekday: true, alias: true})
+    expect(validDOWDay).toBeFalsy()
+
+    const validDOWDay2 = isValidCron('* * 2-5W * THU', {allowWeekday: true, alias: true})
+    expect(validDOWDay2).toBeFalsy()
+
+    const validDOMDay = isValidCron('* * * * * 2W', {allowWeekday: true, seconds: true})
+    expect(validDOMDay).toBeFalsy()
+  })
+
+  // TODO: L and W usage with iterators?
 })
