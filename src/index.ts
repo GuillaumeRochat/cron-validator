@@ -47,6 +47,13 @@ const isValidLast = (value: string[], start: number, stop: number, allowWeekday:
   }
 }
 
+const isValidWeekday = (value: string[], start: number, stop: number): boolean => {
+  if (value.length === 1) {
+    return value[0].slice(-1) === "W" && isInRange( safeParseInt(value[0].slice(0,-1)), start, stop )
+  }
+  return false
+}
+
 const isValidRange = (value: string, start: number, stop: number, allowHashed?: boolean, allowLast?: boolean, allowWeekday?: boolean, inWeekday?: boolean): boolean => {
   const sides = value.split('-')
   if (allowHashed && sides[0].slice(0,1) === "H") {
@@ -54,7 +61,7 @@ const isValidRange = (value: string, start: number, stop: number, allowHashed?: 
   }
   switch (sides.length) {
     case 1:
-      return isWildcard(value) || isInRange(safeParseInt(value), start, stop) || (!!allowLast && isValidLast(sides, start, stop, !!allowWeekday, !!inWeekday))
+      return isWildcard(value) || isInRange(safeParseInt(value), start, stop) || (!!allowLast && isValidLast(sides, start, stop, !!allowWeekday, !!inWeekday)) || (!!allowWeekday && isValidWeekday(sides, start, stop))
     case 2:
       const [small, big] = sides.map((side: string): number => safeParseInt(side))
       return (small <= big && isInRange(small, start, stop) && isInRange(big, start, stop)) || (!!allowLast && isValidLast(sides, start, stop, !!allowWeekday, !!inWeekday))
