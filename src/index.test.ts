@@ -603,6 +603,12 @@ describe('validate', () => {
     const validDOM = isValidCron('* * L * *', {allowLast: true})
     expect(validDOM).toBeTruthy()
 
+    const validLW = isValidCron('* * LW * *', {allowLast: true, allowWeekday: true})
+    expect(validLW).toBeTruthy()
+
+    const validLWDOW = isValidCron('* * * * LW', {allowLast: true, allowWeekday: true})
+    expect(validLWDOW).toBeFalsy()
+
     const validDOMAlias = isValidCron('* * L * WED', {allowLast: true, alias:true})
     expect(validDOMAlias).toBeTruthy()
 
