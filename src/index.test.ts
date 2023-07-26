@@ -603,6 +603,12 @@ describe('validate', () => {
     const validDOM = isValidCron('* * L * *', {allowLast: true})
     expect(validDOM).toBeTruthy()
 
+    const validDOMAlias = isValidCron('* * L * WED', {allowLast: true, alias:true})
+    expect(validDOMAlias).toBeTruthy()
+
+    const validDOMsec = isValidCron('* * * L * THU', {allowLast: true, alias: true, seconds: true})
+    expect(validDOMsec).toBeTruthy()
+
     const validDOMOffset = isValidCron('* * L-2 * *', {allowLast: true})
     expect(validDOMOffset).toBeTruthy()
 
@@ -617,5 +623,22 @@ describe('validate', () => {
 
     const validWithSeconds = isValidCron('L * * * * *', {allowLast: true, seconds: true})
     expect(validWithSeconds).toBeFalsy()
+  })
+
+  it('should not accept L in invalid places or with invalid offsets/values', () => {
+    const validDOM = isValidCron('* L L * *', {allowLast: true})
+    expect(validDOM).toBeFalsy()
+
+    const validDOMOffset = isValidCron('* L-2 L-3 * *', {allowLast: true})
+    expect(validDOMOffset).toBeFalsy()
+
+    const validDOW = isValidCron('* * * * L *', {allowLast: true, seconds: true})
+    expect(validDOW).toBeFalsy()
+
+    const validDOWDay = isValidCron('* * * * 2L-2', {allowLast: true})
+    expect(validDOWDay).toBeFalsy()
+
+    const validDOMDay = isValidCron('* * * 3L * 2L', {allowLast: true, seconds: true})
+    expect(validDOMDay).toBeFalsy()
   })
 })
