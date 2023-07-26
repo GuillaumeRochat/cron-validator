@@ -545,6 +545,9 @@ describe('validate', () => {
 
     const validWithRange = isValidCron('H(0-30)-50 * * * *', {allowHashed: true})
     expect(validWithRange).toBeFalsy()
+
+    const validWithReverse = isValidCron('H(30-0) * * * *', {allowHashed: true})
+    expect(validWithReverse).toBeFalsy()
   })
 
   it('should accept H with iterators if allowHashed is set', () => {

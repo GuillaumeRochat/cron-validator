@@ -26,7 +26,9 @@ const isValidHashed = (value: string[], start: number, stop: number): boolean =>
       return value[0] === "H"
     case 2:
       // H Range: Has to start with H(, integers in range need to be valid, end has to be /\d\)/
-      return value[0].slice(0,2) === "H(" && isInRange(safeParseInt( value[0].slice(2) ), start, stop) && isInRange(safeParseInt(value[1].slice(0,-1)), start, stop) && value[1].search(/\d+\)/) === 0
+      const startNum = safeParseInt(value[0].slice(2))
+      const stopNum = safeParseInt(value[1].slice(0,-1))
+      return value[0].slice(0,2) === "H(" && startNum <= stopNum && isInRange(startNum, start, stop) && isInRange(stopNum, start, stop) && value[1].search(/\d+\)/) === 0
     default:
       return false
   }
