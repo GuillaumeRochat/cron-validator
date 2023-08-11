@@ -528,6 +528,9 @@ describe('validate', () => {
 
     const validWithNoRange = isValidCron('* * H( * THU', {allowHashed: true, alias: true} )
     expect(validWithNoRange).toBeFalsy()
+
+    const validWithWrongRange = isValidCron('* * H(1-12 * THU', {allowHashed: true, alias: true} )
+    expect(validWithWrongRange).toBeFalsy()
   })
 
   it('should not accept H with invalid ranges even if allowHashed is set', () => {
