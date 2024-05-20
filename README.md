@@ -87,6 +87,7 @@ cron.isValidCron('* * * * 7', { allowSevenAsSunday: true });
 - [x] Support alias.
 - [x] Support blank day notation with `?` symbol.
 - [x] Support both 0-6 and 1-7 ranges for weekdays.
+- [x] Support n-th weekday of month such as `TUE#2`
 - [ ] ~~Have an explain mode returning the fragments in error.~~
 
 ## Motivations
