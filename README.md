@@ -81,6 +81,18 @@ cron.isValidCron('* * * * 7', { allowSevenAsSunday: true });
 // true
 ```
 
+The `allowNthWeekdayOfMonth` flag can be enabled to enable expressions denoting n-th weekday of the month:
+
+```js
+const cron = require('cron-validator');
+
+cron.isValidCron('* * * * tue#2');
+// false
+
+cron.isValidCron('* * * * tue#2', { allowNthWeekdayOfMonth: true }); // second Tuesday of each month
+// true
+```
+
 ## Features
 
 - [x] Support seconds.
