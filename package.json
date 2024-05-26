@@ -2,7 +2,6 @@
   "name": "cron-validator",
   "version": "1.3.1",
   "description": "Validates cron expressions",
-  "main": "lib/index.js",
   "author": "Guillaume Rochat",
   "license": "MIT",
   "bugs": {
@@ -17,12 +16,35 @@
     "validation"
   ],
   "files": [
-    "lib/*"
+    "dist/cjs/index.d.ts",
+    "dist/cjs/index.js",
+    "dist/cjs/index.js.map",
+    "dist/cjs/package.json",
+    "dist/esm/index.d.ts",
+    "dist/esm/index.js",
+    "dist/esm/index.js.map"
   ],
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      },
+      "default": "./dist/esm/index.js"
+    }
+  },
   "scripts": {
     "test": "npm run build && node --test",
-    "build": "tsc",
-    "prepublishOnly": "npm run build && npm run test"
+    "build": "tsc -b tsconfig.cjs.json tsconfig.esm.json && echo '{\"type\":\"commonjs\"}' > ./dist/cjs/package.json",
+    "build:clean": "rm -rf ./dist",
+    "prepublishOnly": "npm run build:clean && npm run build && npm run test"
   },
   "devDependencies": {
     "typescript": "^5.4.5"

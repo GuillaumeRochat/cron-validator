@@ -1,7 +1,7 @@
 import { strict as assert } from "node:assert";
 import { describe, it } from "node:test";
 
-import { isValidCron } from "./lib/index.js";
+import { isValidCron } from "./dist/esm/index.js";
 
 describe("validate", () => {
   it("should not accept less than 5 symbols", () => {

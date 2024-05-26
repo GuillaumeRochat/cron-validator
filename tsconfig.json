@@ -1,13 +1,9 @@
 {
   "compilerOptions": {
-    "pretty": true,
-    "target": "es5",
+    "target": "es2016",
     "module": "commonjs",
-    "lib": [
-      "esnext"
-    ],
-    "moduleResolution": "node",
-    "outDir": "./lib",
+    "esModuleInterop": true,
+    "outDir": "./dist",
     "declaration": true,
     "noEmit": false,
     "sourceMap": true,
@@ -18,7 +14,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "*.ts"
+  "files": [
+    "index.ts"
   ]
 }
