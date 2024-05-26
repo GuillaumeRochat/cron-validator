@@ -20,28 +20,11 @@
     "lib/*"
   ],
   "scripts": {
-    "lint": "tslint -t stylish --project \"tsconfig.json\"",
-    "test": "jest --verbose --coverage",
+    "test": "npm run build && node --test",
     "build": "tsc",
-    "prepublishOnly": "npm run lint && npm run test && npm run build"
+    "prepublishOnly": "npm run build && npm run test"
   },
   "devDependencies": {
-    "@types/jest": "^27.4.0",
-    "jest": "^27.4.7",
-    "ts-jest": "^27.1.3",
-    "ts-node": "^10.4.0",
-    "tslint": "^6.1.3",
-    "tslint-config-standard": "^9.0.0",
-    "typescript": "^3.9.10"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "ts"
-    ],
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
-    },
-    "testRegex": "((\\.|/)(test))\\.(ts)$"
+    "typescript": "^5.4.5"
   }
 }
