@@ -147,10 +147,11 @@ const hasValidWeekdays = (weekdays: string, options: WeekdayOptions): boolean =>
     : weekdays;
   const maxWeekdayNum = allowSevenAsSunday ? 7 : 6;
   
-  if (allowNthWeekdayOfMonth) {
+  const splitByHash = remappedWeekdays.split('#');
+  if (allowNthWeekdayOfMonth && splitByHash.length >= 2) {
     // see https://github.com/Airfooox/cron-validate/blob/b95aae1f3a44ad89dbfc7d1a7fca63f3b697aa14/src/helper.ts#L139
     // and https://www.quartz-scheduler.org/documentation/quartz-2.2.2/tutorials/crontrigger.html#special-characters
-    const [weekday, occurrence, ...leftOvers] = remappedWeekdays.split('#')
+    const [weekday, occurrence, ...leftOvers] = splitByHash;
     if (leftOvers.length !== 0) {
       return false;
     }
