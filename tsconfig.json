@@ -1,29 +1,20 @@
 {
-    "compilerOptions": {
-        "pretty": true,
-
-        "target": "es5",
-        "module": "commonjs",
-        "lib": ["esnext"],
-        "moduleResolution": "node",
-        "outDir": "./lib",
-        "declaration": true,
-        "noEmit": false,
-        "sourceMap": true,
-        "inlineSources": true,
-
-        "strict": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true
-    },
-    "include": [
-        "src/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "lib/**/*",
-        "src/**/*.test.ts"
-    ]
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "declaration": true,
+    "noEmit": false,
+    "sourceMap": true,
+    "inlineSources": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "files": [
+    "index.ts"
+  ]
 }
