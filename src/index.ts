@@ -119,8 +119,13 @@ const weekdaysAlias: { [key: string]: string } = {
   sat: '6'
 }
 
-const hasValidWeekdays = (weekdays: string, alias?: boolean, allowBlankDay?: boolean, allowSevenAsSunday?: boolean): boolean => {
+type WeekdayOptions = Pick<
+  Options,
+  "alias" | "allowBlankDay" | "allowSevenAsSunday" | "allowNthWeekdayOfMonth"
+>;
 
+const hasValidWeekdays = (weekdays: string, options: WeekdayOptions): boolean => {
+  const { allowBlankDay, alias, allowSevenAsSunday, allowNthWeekdayOfMonth } = options;
   // If there is a question mark, checks if the allowBlankDay flag is set
   if (allowBlankDay && isQuestionMark(weekdays)) {
     return true
@@ -133,15 +138,29 @@ const hasValidWeekdays = (weekdays: string, alias?: boolean, allowBlankDay?: boo
     return false
   }
 
-  if (alias) {
-    const remappedWeekdays = weekdays.toLowerCase().replace(/[a-z]{3}/g, (match: string): string => {
-      return weekdaysAlias[match] === undefined ? match : weekdaysAlias[match]
-    })
-    // If any invalid alias was used, it won't pass the other checks as there will be non-numeric values in the weekdays
-    return validateForRange(remappedWeekdays, 0, allowSevenAsSunday ? 7 : 6)
+  const remappedWeekdays = alias
+    ? weekdays.toLowerCase().replace(/[a-z]{3}/g, (match: string): string => {
+        return weekdaysAlias[match] === undefined
+          ? match
+          : weekdaysAlias[match];
+      })
+    : weekdays;
+  const maxWeekdayNum = allowSevenAsSunday ? 7 : 6;
+  
+  const splitByHash = remappedWeekdays.split('#');
+  if (allowNthWeekdayOfMonth && splitByHash.length >= 2) {
+    // see https://github.com/Airfooox/cron-validate/blob/b95aae1f3a44ad89dbfc7d1a7fca63f3b697aa14/src/helper.ts#L139
+    // and https://www.quartz-scheduler.org/documentation/quartz-2.2.2/tutorials/crontrigger.html#special-characters
+    const [weekday, occurrence, ...leftOvers] = splitByHash;
+    if (leftOvers.length !== 0) {
+      return false;
+    }
+
+    return isInRange(safeParseInt(occurrence), 1, 5) &&
+      isInRange(safeParseInt(weekday), 0, maxWeekdayNum);
   }
 
-  return validateForRange(weekdays, 0, allowSevenAsSunday ? 7 : 6)
+  return validateForRange(remappedWeekdays, 0, maxWeekdayNum)
 }
 
 const hasCompatibleDayFormat = (days: string, weekdays: string, allowBlankDay?: boolean) => {
@@ -157,17 +176,19 @@ type Options = {
   seconds: boolean
   allowBlankDay: boolean
   allowSevenAsSunday: boolean
+  allowNthWeekdayOfMonth: boolean
 }
 
 const defaultOptions: Options = {
   alias: false,
   seconds: false,
   allowBlankDay: false,
-  allowSevenAsSunday: false
+  allowSevenAsSunday: false,
+  allowNthWeekdayOfMonth: false,
 }
 
-export const isValidCron = (cron: string, options?: Partial<Options>): boolean => {
-  options = { ...defaultOptions, ...options }
+export const isValidCron = (cron: string, partialOptions?: Partial<Options>): boolean => {
+  const options = { ...defaultOptions, ...partialOptions }
 
   const splits = split(cron)
 
@@ -190,7 +211,7 @@ export const isValidCron = (cron: string, options?: Partial<Options>): boolean =
   checks.push(hasValidHours(hours))
   checks.push(hasValidDays(days, options.allowBlankDay))
   checks.push(hasValidMonths(months, options.alias))
-  checks.push(hasValidWeekdays(weekdays, options.alias, options.allowBlankDay, options.allowSevenAsSunday))
+  checks.push(hasValidWeekdays(weekdays, options))
   checks.push(hasCompatibleDayFormat(days, weekdays, options.allowBlankDay))
 
   return checks.every(Boolean)

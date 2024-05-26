@@ -214,7 +214,7 @@ describe('validate', () => {
     expect(valid).toBeFalsy()
   })
 
-  it('should accepts ranges', () => {
+  it('should accept ranges', () => {
     const validSecond = isValidCron('1-10 * * * * *', { seconds: true })
     expect(validSecond).toBeTruthy()
 
@@ -233,6 +233,11 @@ describe('validate', () => {
     const validWeekday = isValidCron('* * * * 0-6')
     expect(validWeekday).toBeTruthy()
   })
+
+  it('should accept ranges regardless of allowNthWeekdayOfMonth flag', () => {
+    const validWeekday = isValidCron('* * * * 0-6', { allowNthWeekdayOfMonth: true });
+    expect(validWeekday).toBeTruthy();
+  });
 
   it('should accept list of ranges', () => {
     const validSecond = isValidCron('1-10,11-20,21-30 * * * * *', { seconds: true })
@@ -478,5 +483,30 @@ describe('validate', () => {
 
     const validWithAliases = isValidCron('* * ? * ?', { alias: true, allowBlankDay: true })
     expect(validWithAliases).toBeFalsy()
+  })
+
+  describe('nth weekday', () => {
+    it.each([
+      ['1#2'], 
+      ['mon#2'], 
+      ['WED#5']
+    ])('should accept %s', (weekday) => {
+      const valid = isValidCron(`* * * * ${weekday}`, { allowNthWeekdayOfMonth: true, alias: true });
+      expect(valid).toBeTruthy();
+    });
+
+    it.each([
+      ['mon-fri#2'],
+      ['mon#2-fri#2'],
+      ['WED#6']
+    ])('should not accept %s', (weekday) => {
+      const valid = isValidCron(`* * * * ${weekday}`, { allowNthWeekdayOfMonth: true, alias: true });
+      expect(valid).toBeFalsy();
+    });
+
+    it('should not accept aliases if alias is not set', () => {
+      const valid = isValidCron('* * * * mon#2', { allowNthWeekdayOfMonth: true });
+      expect(valid).toBeFalsy();
+    })
   })
 })
