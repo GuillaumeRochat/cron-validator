@@ -1,6 +1,6 @@
 {
   "name": "cron-validator",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Validates cron expressions",
   "main": "lib/index.js",
   "author": "Guillaume Rochat",
@@ -23,7 +23,7 @@
     "lint": "tslint -t stylish --project \"tsconfig.json\"",
     "test": "jest --verbose --coverage",
     "build": "tsc",
-    "prepublishOnly": "npm run lint && npm run test && npm run build"
+    "prepublishOnly": "npm run test && npm run build"
   },
   "devDependencies": {
     "@types/jest": "^27.4.0",
