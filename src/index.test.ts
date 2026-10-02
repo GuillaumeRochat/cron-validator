@@ -1,5 +1,42 @@
 import { isValidCron } from './index'
 
+describe('complete alias tokens', () => {
+  it.each([
+    '* * * jan2 *',
+    '* * * 1jan *',
+    '* * * jan1 *',
+    '* * * 0jan *',
+    '* * * JANFEB *',
+    '* * * 0dec *',
+    '* * * 1feb *',
+    '* * * jan0 *',
+    '* * * jan2,feb *',
+    '* * * * sunmon',
+    '* * * * sunsun',
+    '* * * * sun1',
+    '* * * * 0mon',
+    '* * * * 0fri',
+    '* * * * sun6',
+    '* * * * 0tue',
+    '* * * * 0sat',
+    '* * * * mon-sun6',
+    '* * * * 0mon#2',
+    '* * * * sunmon#3',
+    '* * * * sun2#1'
+  ])('should reject malformed aliases in %s', (cron) => {
+    expect(isValidCron(cron, { alias: true, allowNthWeekdayOfMonth: true })).toBeFalsy()
+  })
+
+  it.each([
+    '* * * jan-mar/2,SEP-DEC/3 mon-fri/2,sun',
+    '* * * 1-mar/2,sep-12/3 0-tue/2,thu-6/2',
+    '* * * * TUE#2',
+    '* * * JAN mon'
+  ])('should accept complete aliases in %s', (cron) => {
+    expect(isValidCron(cron, { alias: true, allowNthWeekdayOfMonth: true })).toBeTruthy()
+  })
+})
+
 describe('validate', () => {
   it('should not accept less than 5 symbols', () => {
     const valid = isValidCron('* * * *')

@@ -99,7 +99,7 @@ const hasValidMonths = (months: string, alias?: boolean): boolean => {
   }
 
   if (alias) {
-    const remappedMonths = months.toLowerCase().replace(/[a-z]{3}/g, (match: string): string => {
+    const remappedMonths = months.toLowerCase().replace(/[a-z\d]+/g, (match: string): string => {
       return monthAlias[match] === undefined ? match : monthAlias[match]
     })
     // If any invalid alias was used, it won't pass the other checks as there will be non-numeric values in the months
@@ -139,7 +139,7 @@ const hasValidWeekdays = (weekdays: string, options: WeekdayOptions): boolean =>
   }
 
   const remappedWeekdays = alias
-    ? weekdays.toLowerCase().replace(/[a-z]{3}/g, (match: string): string => {
+    ? weekdays.toLowerCase().replace(/[a-z\d]+/g, (match: string): string => {
         return weekdaysAlias[match] === undefined
           ? match
           : weekdaysAlias[match];
